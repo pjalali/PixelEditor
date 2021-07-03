@@ -5,8 +5,8 @@
 <head>
 	<title>Pixel Editor</title>
 	<meta charset='utf-8'>
-	<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}" type="text/css" media="all">
-	<script src="{{url_for('static', filename='js/capture.js')}}"></script>
+	<link rel="stylesheet" href="/css/main.css" type="text/css" media="all">
+	<script src="/js/capture.js"></script>
 </head>
 <body onload="setDimensions()">
 	<div class="contentarea">
@@ -18,7 +18,7 @@
 			<input type="submit" value="Retake Photo">
 		</form>
 		<div class="output">
-			<img id="photo" src={{ data }}>
+			<img id="photo" src={{.ImgData}}>
 		</div>
 
 		<form method="GET" action="/reset">
@@ -27,36 +27,36 @@
 
 		<form method="POST" action="/edit" id="editForm">
 			<label for="threads">Threads for RGB and contrast calculation:</label><br>
-			<input type="number" min="1" max={{ h }} value={{ th }} name="threads" id="threads">
+			<input type="number" min="1" max={{.Height}} value={{.Threads}} name="threads" id="threads">
 			<br>
 			<label for="rOffset">Red Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{ r }} class="slider" name="rOffset" id="rOffset">
+			<input type="range" min="-255" max="255" value={{.Red}} class="slider" name="rOffset" id="rOffset">
 			<br>
 			<label for="gOffset">Green Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{ g }} class="slider" name="gOffset" id="gOffset">
+			<input type="range" min="-255" max="255" value={{.Green}} class="slider" name="gOffset" id="gOffset">
 			<br>
 			<label for="bOffset">Blue Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{ b }} class="slider" name="bOffset" id="bOffset">
+			<input type="range" min="-255" max="255" value={{.Blue}} class="slider" name="bOffset" id="bOffset">
 			<br>
 			<label for="contrast">Contrast Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{ c }} class="slider" name="contrast" id="contrast">
+			<input type="range" min="-255" max="255" value={{.Contrast}} class="slider" name="contrast" id="contrast">
 			<br>
 			<label for="contrast">Hue Value:</label><br>
-			<input type="range" min="0" max="360" value={{ hue }} class="slider" name="hue" id="hue">
+			<input type="range" min="0" max="360" value={{.Hue}} class="slider" name="hue" id="hue">
 			<br>
 			<label for="contrast">Saturation Displacement:</label><br>
-			<input type="range" min="-100" max="100" value={{ sat }} class="slider" name="sat" id="sat">
+			<input type="range" min="-100" max="100" value={{.Saturation}} class="slider" name="sat" id="sat">
 			<br>
 			<label for="contrast">Light Displacement:</label><br>
-			<input type="range" min="-100" max="100" value={{ light }} class="slider" name="light" id="light">
+			<input type="range" min="-100" max="100" value={{.Light}} class="slider" name="light" id="light">
 			<br>
 			<input type="submit" value="Edit!">
-			<input type="hidden" name="widthVal" value={{ w }}>
-			<input type="hidden" name="heightVal" value={{ h }}>
+			<input type="hidden" name="widthVal" value={{.Width}}>
+			<input type="hidden" name="heightVal" value={{.Height}}>
 		</form>
-		<p>{{ trgb }}</p>
-		<p>{{ thsl }}</p>
-		<p>{{ tt }}</p>
+		<p>{{.TimeRGB}}</p>
+		<p>{{.TimeHSL}}</p>
+		<p>{{.TimeTotal}}</p>
 	</div>
 </body>
 </html>
