@@ -1,0 +1,39 @@
+<!-- Based on code from Mozilla: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos -->
+
+<!doctype html>
+<html>
+<head>
+	<title>Pixel Editor</title>
+	<meta charset='utf-8'>
+	<link rel="stylesheet" href="{{ url_for('static', filename= 'css/main.css') }}" type="text/css" media="all">
+	<script src="{{url_for('static', filename='js/capture.js')}}"></script>
+</head>
+<body onload="startup()">
+	<div class="contentarea">
+		<h1>
+			Pixel Editor
+		</h1>
+
+		<h3>Take a photo</h3>
+		<div class="camera">
+			<video id="video">Video stream not available.</video>
+			<button id="startbutton">Take photo</button> 
+		</div>
+		<p>Webcam Image Size:</p>
+		<input type="button" id="320btn" value="320x240" onclick="resize(320,240)">
+		<input type="button" id="640btn" value="640x480" onclick="resize(640,480)">
+		<canvas id="canvas">
+		</canvas>
+		<form method="POST" action="/capture" id="imgDataForm">
+			<input type="text" name="sizeData" id="sizeData">
+			<input type="text" name="imgData" id="imgData">
+			<input type="hidden" name="wData" id="wData">
+			<input type="hidden" name="hData" id="hData">
+		</form>
+		<h3>Or select a (.png) file</h3>
+		<form id="uploadImage" method='POST' action="upload" enctype=multipart/form-data>
+			<input type="file" name='file' id="fileInput" onchange="uploadImage()">
+		</form>
+	</div>
+</body>
+</html>
