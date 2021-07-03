@@ -16,7 +16,7 @@ After navigating to the webpage, the user would take/upload their photo and the 
 
 ## How to run
 
-1. Ensure you have `go`, `python`, `flask`, and `make` installed
+1. Ensure you have `go`, `python`, `python-flask`, `python-pil`, and `make` installed
 1. Clone repository and `cd` into it
 1. Run `export FLASK_APP=app.py`
 1. Run `make`
