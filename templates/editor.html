@@ -21,9 +21,12 @@
 			<img id="photo" src={{.ImgData}}>
 		</div>
 
-		<form method="GET" action="/reset">
+		<button onclick="reset()">
+			Reset Image and Values
+		</button>
+		<!-- <form method="GET" action="/reset">
 			<input type="submit" value="Reset Image and Values">
-		</form>
+		</form> -->
 
 		<form method="POST" action="/edit" id="editForm">
 			<label for="threads">Threads for RGB and contrast calculation:</label><br>
@@ -53,6 +56,7 @@
 			<input type="submit" value="Edit!">
 			<input type="hidden" name="widthVal" value={{.Width}}>
 			<input type="hidden" name="heightVal" value={{.Height}}>
+			<input type="hidden" name="originalImage" value={{.OriginalImage}} id="originalImage">
 		</form>
 		<p>{{.TimeRGB}}</p>
 		<p>{{.TimeHSL}}</p>

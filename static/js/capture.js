@@ -93,3 +93,14 @@ function takepicture() {
 
     document.getElementById("imgDataForm").submit(); 
 }
+
+function reset() {
+    document.getElementById("photo").src = document.getElementById("originalImage").value;
+    document.getElementById("rOffset").value = 0;
+    document.getElementById("gOffset").value = 0;
+    document.getElementById("bOffset").value = 0;
+    document.getElementById("contrast").value = 0;
+    document.getElementById("hue").value = 0;
+    document.getElementById("sat").value = 0;
+    document.getElementById("light").value = 0;
+}
