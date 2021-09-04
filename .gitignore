@@ -2,3 +2,5 @@ __pycache__
 .vscode
 
 app.py
+*.png
+PixelEditorEngine
