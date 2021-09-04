@@ -47,20 +47,21 @@ func capture(w http.ResponseWriter, r *http.Request) {
 	height := r.FormValue("hData")
 
 	edt := EditorTemplateData{
-		ImgData:    imgDataB64,
-		Height:     height,
-		Width:      width,
-		Threads:    "1",
-		Red:        "0",
-		Blue:       "0",
-		Green:      "0",
-		Contrast:   "0",
-		Hue:        "0",
-		Saturation: "0",
-		Light:      "0",
-		TimeRGB:    "",
-		TimeHSL:    "",
-		TimeTotal:  "",
+		OriginalImage:	imgDataB64,
+		ImgData:	    imgDataB64,
+		Height:     	height,
+		Width:	 	    width,
+		Threads:	    "1",
+		Red: 	        "0",
+		Blue: 	        "0",
+		Green:  	    "0",
+		Contrast:	    "0",
+		Hue:   		    "0",
+		Saturation: 	"0",
+		Light:      	"0",
+		TimeRGB:    	"",
+		TimeHSL:    	"",
+		TimeTotal:  	"",
 	}
 
 	tmpl.Execute(w, edt)
