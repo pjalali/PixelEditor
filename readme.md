@@ -1,4 +1,4 @@
-# Pixel Editor
+# Pixel Editor (Python-less branch)
 
 ## About
 
@@ -16,9 +16,4 @@ After navigating to the webpage, the user would take/upload their photo and the 
 
 ## How to run
 
-1. Ensure you have `go`, `python`, `flask`, and `make` installed
-1. Clone repository and `cd` into it
-1. Run `export FLASK_APP=app.py`
-1. Run `make`
-1. Navigate to `127.0.0.1:5000`
-1. Have fun!
+1. Run `go run main.go`
