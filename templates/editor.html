@@ -24,9 +24,6 @@
 		<button onclick="reset()">
 			Reset Image and Values
 		</button>
-		<!-- <form method="GET" action="/reset">
-			<input type="submit" value="Reset Image and Values">
-		</form> -->
 
 		<form method="POST" action="/edit" id="editForm">
 			<label for="threads">Threads for RGB and contrast calculation:</label><br>
@@ -54,8 +51,8 @@
 			<input type="range" min="-100" max="100" value={{.Light}} class="slider" name="light" id="light">
 			<br>
 			<input type="submit" value="Edit!">
-			<input type="hidden" name="widthVal" value={{.Width}}>
-			<input type="hidden" name="heightVal" value={{.Height}}>
+			<input type="hidden" name="wData" value={{.Width}}>
+			<input type="hidden" name="hData" value={{.Height}}>
 			<input type="hidden" name="originalImage" value={{.OriginalImage}} id="originalImage">
 		</form>
 		<p>{{.TimeRGB}}</p>
