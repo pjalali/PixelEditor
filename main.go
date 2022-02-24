@@ -10,7 +10,7 @@ import (
 const PORT = ":5000"
 
 func main() {
-	fs := http.FileServer(http.Dir("./server/web/static"))
+	fs := http.FileServer(http.Dir("./internal/server/web/static"))
 	http.Handle("/", fs)
 	http.HandleFunc("/capture", routes.Capture)
 	http.HandleFunc("/edit", routes.Edit)

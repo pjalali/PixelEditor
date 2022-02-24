@@ -35,7 +35,7 @@ type EditorTemplateData struct {
 
 func Capture(w http.ResponseWriter, r *http.Request) {
 	log.Println("WITHIN CAPUTRE")
-	editorTemplateFileLocation := filepath.Join("templates", "editor.html")
+	editorTemplateFileLocation := filepath.Join("internal/server/web/templates", "editor.html")
 	log.Println(editorTemplateFileLocation)
 	tmpl, _ := template.ParseFiles(editorTemplateFileLocation)
 	r.ParseForm()
@@ -63,7 +63,7 @@ func Capture(w http.ResponseWriter, r *http.Request) {
 
 func Edit(w http.ResponseWriter, r *http.Request) {
 	log.Println("Within the editor")
-	editorTemplateFileLocation := filepath.Join("templates", "editor.html")
+	editorTemplateFileLocation := filepath.Join("internal/server/web/templates", "editor.html")
 	tmpl, _ := template.ParseFiles(editorTemplateFileLocation)
 	r.ParseForm()
 

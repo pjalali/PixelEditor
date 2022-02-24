@@ -1,6 +1,2 @@
-__pycache__
 .vscode
-
-app.py
-*.png
-PixelEditorEngine
+__debug_bin.exe
