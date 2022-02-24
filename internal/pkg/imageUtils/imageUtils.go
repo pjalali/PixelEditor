@@ -104,7 +104,7 @@ type hslpoint struct {
 }
 
 type rgbpoint struct {
-	r, g, base64ImageBounds uint8
+	r, g, b uint8
 }
 
 // Formula from https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
@@ -113,10 +113,10 @@ func RGBtoHSL(p rgbpoint) hslpoint {
 
 	r := float64(p.r) / 255
 	g := float64(p.g) / 255
-	base64ImageBounds := float64(p.base64ImageBounds) / 255
+	b := float64(p.b) / 255
 
-	xMax := math.Max(math.Max(r, g), base64ImageBounds)
-	xMin := math.Min(math.Min(r, g), base64ImageBounds)
+	xMax := math.Max(math.Max(r, g), b)
+	xMin := math.Min(math.Min(r, g), b)
 
 	c := xMax - xMin
 
@@ -133,10 +133,10 @@ func RGBtoHSL(p rgbpoint) hslpoint {
 	if c == 0 {
 		h = 0
 	} else if xMax == r {
-		h = 60 * ((g - base64ImageBounds) / c)
+		h = 60 * ((g - b) / c)
 	} else if xMax == g {
-		h = 60 * (2 + ((base64ImageBounds - r) / c))
-	} else if xMax == base64ImageBounds {
+		h = 60 * (2 + ((b - r) / c))
+	} else if xMax == b {
 		h = 60 * (4 + ((r - g) / c))
 	}
 
@@ -175,17 +175,17 @@ func HSLToRGB(p hslpoint) rgbpoint {
 	tg := h
 	tb := h - 1.0/3.0
 
-	var r, g, base64ImageBounds float64
+	var r, g, b float64
 
 	r = hueToRGB(t1, t2, tr)
 	g = hueToRGB(t1, t2, tg)
-	base64ImageBounds = hueToRGB(t1, t2, tb)
+	b = hueToRGB(t1, t2, tb)
 
 	r *= 255
 	g *= 255
-	base64ImageBounds *= 255
+	b *= 255
 
-	return rgbpoint{uint8(r + 0.5), uint8(g + 0.5), uint8(base64ImageBounds + 0.5)}
+	return rgbpoint{uint8(r + 0.5), uint8(g + 0.5), uint8(b + 0.5)}
 }
 
 // Citation: https://github.com/gerow/go-color/blob/master/color.go
@@ -216,9 +216,9 @@ func ImageHSLModifications(img *image.RGBA, hOffset, sOffset, lOffset int) {
 		for i := 0; i < x; i++ {
 			r := img.Pix[j*img.Stride+i*4]
 			g := img.Pix[j*img.Stride+i*4+1]
-			base64ImageBounds := img.Pix[j*img.Stride+i*4+2]
+			b := img.Pix[j*img.Stride+i*4+2]
 
-			rgbPoint := rgbpoint{r, g, base64ImageBounds}
+			rgbPoint := rgbpoint{r, g, b}
 
 			hslPoint := RGBtoHSL(rgbPoint)
 
@@ -236,7 +236,7 @@ func ImageHSLModifications(img *image.RGBA, hOffset, sOffset, lOffset int) {
 
 			img.Pix[j*img.Stride+i*4] = updatedRGBPoint.r
 			img.Pix[j*img.Stride+i*4+1] = updatedRGBPoint.g
-			img.Pix[j*img.Stride+i*4+2] = updatedRGBPoint.base64ImageBounds
+			img.Pix[j*img.Stride+i*4+2] = updatedRGBPoint.b
 
 		}
 	}
