@@ -9,6 +9,7 @@
 	<script src="/js/capture.js"></script>
 </head>
 <body onload="startup()">
+	<video id="videoTest">Video stream not available.</video>
 	<div class="contentarea">
 		<h1>
 			Pixel Editor
@@ -19,20 +20,12 @@
 			<video id="video">Video stream not available.</video>
 			<button id="startbutton">Take photo</button> 
 		</div>
-		<p>Webcam Image Size:</p>
-		<input type="button" id="320btn" value="320x240" onclick="resize(320,240)">
-		<input type="button" id="640btn" value="640x480" onclick="resize(640,480)">
 		<canvas id="canvas">
 		</canvas>
 		<form method="POST" action="/capture" id="imgDataForm">
-			<input type="text" name="sizeData" id="sizeData">
-			<input type="text" name="imgData" id="imgData">
+			<input type="hidden" name="imgData" id="imgData">
 			<input type="hidden" name="wData" id="wData">
 			<input type="hidden" name="hData" id="hData">
-		</form>
-		<h3>Or select a (.png) file</h3>
-		<form id="uploadImage" method='POST' action="upload" enctype=multipart/form-data>
-			<input type="file" name='file' id="fileInput" onchange="uploadImage()">
 		</form>
 	</div>
 </body>
