@@ -14,47 +14,53 @@
 			Pixel Editor
 		</h1>
 
-		<form method="GET" action="/">
-			<input type="submit" value="Retake Photo">
-		</form>
-		<div class="output">
-			<img id="photo" src={{.ImgData}}>
-		</div>
-
-		<button onclick="reset()">
-			Reset Image and Values
-		</button>
-
-		<form method="POST" action="/edit" id="editForm">
-			<label for="threads">Threads for RGB and contrast calculation:</label><br>
-			<input type="number" min="1" max={{.Height}} value={{.Threads}} name="threads" id="threads">
-			<br>
-			<label for="rOffset">Red Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{.Red}} class="slider" name="rOffset" id="rOffset">
-			<br>
-			<label for="gOffset">Green Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{.Green}} class="slider" name="gOffset" id="gOffset">
-			<br>
-			<label for="bOffset">Blue Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{.Blue}} class="slider" name="bOffset" id="bOffset">
-			<br>
-			<label for="contrast">Contrast Displacement:</label><br>
-			<input type="range" min="-255" max="255" value={{.Contrast}} class="slider" name="contrast" id="contrast">
-			<br>
-			<label for="contrast">Hue Value:</label><br>
-			<input type="range" min="0" max="360" value={{.Hue}} class="slider" name="hue" id="hue">
-			<br>
-			<label for="contrast">Saturation Displacement:</label><br>
-			<input type="range" min="-100" max="100" value={{.Saturation}} class="slider" name="sat" id="sat">
-			<br>
-			<label for="contrast">Light Displacement:</label><br>
-			<input type="range" min="-100" max="100" value={{.Light}} class="slider" name="light" id="light">
-			<br>
-			<input type="submit" value="Edit!">
-			<input type="hidden" name="wData" value={{.Width}}>
-			<input type="hidden" name="hData" value={{.Height}}>
-			<input type="hidden" name="originalImage" value={{.OriginalImage}} id="originalImage">
-		</form>
+		<table class="table">
+		<!-- <tr> -->
+			<td class="tableCell">
+				<img id="photo" src={{.ImgData}}>
+				<form method="GET" action="/">
+					<input type="submit" value="Retake Photo">
+				</form>
+			</td>
+			<td class="tableCell">
+				<button onclick="reset()">
+					Reset Image and Values
+				</button>
+		
+				<form method="POST" action="/edit" id="editForm">
+					<label for="threads">Threads for RGB and contrast calculation:</label><br>
+					<input type="number" min="1" max={{.Height}} value={{.Threads}} name="threads" id="threads">
+					<br>
+					<label for="rOffset">Red Displacement:</label><br>
+					<input type="range" min="-255" max="255" value={{.Red}} class="slider" name="rOffset" id="rOffset">
+					<br>
+					<label for="gOffset">Green Displacement:</label><br>
+					<input type="range" min="-255" max="255" value={{.Green}} class="slider" name="gOffset" id="gOffset">
+					<br>
+					<label for="bOffset">Blue Displacement:</label><br>
+					<input type="range" min="-255" max="255" value={{.Blue}} class="slider" name="bOffset" id="bOffset">
+					<br>
+					<label for="contrast">Contrast Displacement:</label><br>
+					<input type="range" min="-255" max="255" value={{.Contrast}} class="slider" name="contrast" id="contrast">
+					<br>
+					<label for="contrast">Hue Value:</label><br>
+					<input type="range" min="0" max="360" value={{.Hue}} class="slider" name="hue" id="hue">
+					<br>
+					<label for="contrast">Saturation Displacement:</label><br>
+					<input type="range" min="-100" max="100" value={{.Saturation}} class="slider" name="sat" id="sat">
+					<br>
+					<label for="contrast">Light Displacement:</label><br>
+					<input type="range" min="-100" max="100" value={{.Light}} class="slider" name="light" id="light">
+					<br>
+					<input type="submit" value="Edit!">
+					<input type="hidden" name="wData" value={{.Width}}>
+					<input type="hidden" name="hData" value={{.Height}}>
+					<input type="hidden" name="originalImage" value={{.OriginalImage}} id="originalImage">
+				</form>
+			</td>
+		<!-- </tr> -->
+		</table>
+		
 		<p>{{.TimeRGB}}</p>
 		<p>{{.TimeHSL}}</p>
 		<p>{{.TimeTotal}}</p>
