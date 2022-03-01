@@ -21,7 +21,7 @@ func main() {
 	http.HandleFunc("/edit", routes.Edit)
 
 	log.Println("Listening on " + port)
-	err := http.ListenAndServe(port, nil)
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Println(err)
 	}
