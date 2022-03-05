@@ -30,7 +30,7 @@ function startup() {
     var canvas = document.getElementById('canvas');
     var startbutton = document.getElementById('startbutton');
 
-    navigator.mediaDevices.getUserMedia({video: { width: 640, height: 360  }, audio: false})
+    navigator.mediaDevices.getUserMedia({video: { width: {ideal: 640}, height: {ideal: 360}  }, audio: false})
         .then(function(stream) {
             video.srcObject = stream;
             video.play();
