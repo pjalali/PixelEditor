@@ -2,6 +2,11 @@ canvas {
   display:none;
 }
 
+img, video {
+  max-width: 960px;
+  max-height: 540px;
+}
+
 #startbutton {
   display:block;
   margin:auto;

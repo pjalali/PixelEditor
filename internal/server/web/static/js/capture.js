@@ -1,36 +1,13 @@
 // Based on code from Mozilla: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
 
-let resolutions = [
-    // {Width: 320, Height: 240},
-    {Width: 640, Height: 480},
-    // {Width: 1024, Height: 768},
-    {Width: 1280, Height: 720},
-    {Width: 1920, Height: 1080}
-];
-
-
-function testWebcam() {
-    resolutions.forEach(resolution => {
-        navigator.mediaDevices.getUserMedia({video: { width: resolution.Width, height: resolution.Height  }, audio: false})
-            .then(function(stream) {
-                let {width, height} = stream.getTracks()[0].getSettings();
-                console.log(`${width}x${height}`); // 640x480
-            })
-            .catch(function(err) {
-                console.log("An error occurred while starting webcam: " + err);
-            });
-    });
-}
-
 // Citation: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
 function startup() {
-    testWebcam();
     var streaming = false;
     var video = document.getElementById('video');
     var canvas = document.getElementById('canvas');
     var startbutton = document.getElementById('startbutton');
 
-    navigator.mediaDevices.getUserMedia({video: { width: {ideal: 640}, height: {ideal: 360}  }, audio: false})
+    navigator.mediaDevices.getUserMedia({video: { width: {ideal: 1280}, height: {ideal: 720}  }, audio: false})
         .then(function(stream) {
             video.srcObject = stream;
             video.play();
