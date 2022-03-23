@@ -7,10 +7,15 @@ import (
 	"pjalali.github.io/pixeleditor/internal/pkg/colourConversions"
 )
 
-func ModifyRGBParallel(img *image.RGBA, rOffset, gOffset, bOffset, nThreads int) {
+func ModifyRGBParallel(img *image.RGBA, rOffset, gOffset, bOffset, contrast, nThreads int) {
 	x := img.Rect.Max.X
 	y := img.Rect.Max.Y
 	yChunk := y / nThreads
+
+	var contrastFactor float32 = 1.0
+	if contrast != 0 {
+		contrastFactor = (259 * (float32(contrast) + 255)) / (255 * (259 - float32(contrast)))
+	}
 
 	// // Citation: https://goinbigdata.com/golang-wait-for-all-goroutines-to-finish/
 	var wg sync.WaitGroup
@@ -31,72 +36,38 @@ func ModifyRGBParallel(img *image.RGBA, rOffset, gOffset, bOffset, nThreads int)
 		}
 		wg.Add(1)
 
-		go modifyRGB(&wg, slice, rOffset, gOffset, bOffset)
+		go modifySlice(&wg, slice, rOffset, gOffset, bOffset, contrastFactor)
 	}
 
 	wg.Wait()
 }
 
-func modifyRGB(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int) {
+func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int, contrastFactor float32) {
 	defer wg.Done()
 
 	for i := 0; i < len(img)-3; i += 4 {
-		var oldR, oldG, oldB int
-		oldR = int(img[i])
-		oldG = int(img[i+1])
-		oldB = int(img[i+2])
-
-		img[i] = clamp(oldR + rOffset)
-		img[i+1] = clamp(oldG + gOffset)
-		img[i+2] = clamp(oldB + bOffset)
-	}
-}
-
-func ModifyContrastParallel(img *image.RGBA, contrast, nThreads int) {
-
-	x := img.Rect.Max.X
-	y := img.Rect.Max.Y
-	yChunk := y / nThreads
-	contrastFactor := (259 * (float32(contrast) + 255)) / (255 * (259 - float32(contrast)))
-
-	// // Citation: https://goinbigdata.com/golang-wait-for-all-goroutines-to-finish/
-	var wg sync.WaitGroup
-
-	for i := 0; i < nThreads; i++ {
-		startY := i * yChunk
-		endY := (i+1)*yChunk - 1
-
-		start := startY * img.Stride
-		end := endY*img.Stride + x*4
-
-		var slice []uint8
-		if i == nThreads-1 {
-			slice = img.Pix[start:]
-
-		} else {
-			slice = img.Pix[start:end]
+		if rOffset != 0 {
+			img[i] = clamp(int(img[i]) + rOffset)
 		}
-		wg.Add(1)
 
-		go modifyContrast(&wg, slice, contrastFactor)
-	}
+		if gOffset != 0 {
+			img[i+1] = clamp(int(img[i+1]) + gOffset)
+		}
 
-	wg.Wait()
-}
+		if bOffset != 0 {
+			img[i+2] = clamp(int(img[i+2]) + bOffset)
+		}
 
-func modifyContrast(wg *sync.WaitGroup, img []uint8, factor float32) {
+		if contrastFactor != 1 {
+			oldR := float32(img[i])
+			oldG := float32(img[i+1])
+			oldB := float32(img[i+2])
 
-	defer wg.Done()
+			img[i] = clamp(int(contrastFactor*(oldR-128) + 128))
+			img[i+1] = clamp(int(contrastFactor*(oldG-128) + 128))
+			img[i+2] = clamp(int(contrastFactor*(oldB-128) + 128))
 
-	for i := 0; i < len(img)-3; i += 4 {
-		var oldR, oldG, oldB float32
-		oldR = float32(img[i])
-		oldG = float32(img[i+1])
-		oldB = float32(img[i+2])
-
-		img[i] = clamp(int(factor*(oldR-128) + 128))
-		img[i+1] = clamp(int(factor*(oldG-128) + 128))
-		img[i+2] = clamp(int(factor*(oldB-128) + 128))
+		}
 	}
 }
 
