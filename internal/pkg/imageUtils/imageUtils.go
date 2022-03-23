@@ -7,7 +7,7 @@ import (
 	"pjalali.github.io/pixeleditor/internal/pkg/colourConversions"
 )
 
-func ModifyRGBParallel(img *image.RGBA, rOffset, gOffset, bOffset, contrast, nThreads int) {
+func ModifyImageParallel(img *image.RGBA, rOffset, gOffset, bOffset, contrast, hOffset, sOffset, lOffset, nThreads int) {
 	x := img.Rect.Max.X
 	y := img.Rect.Max.Y
 	yChunk := y / nThreads
@@ -36,13 +36,13 @@ func ModifyRGBParallel(img *image.RGBA, rOffset, gOffset, bOffset, contrast, nTh
 		}
 		wg.Add(1)
 
-		go modifySlice(&wg, slice, rOffset, gOffset, bOffset, contrastFactor)
+		go modifySlice(&wg, slice, rOffset, gOffset, bOffset, contrastFactor, hOffset, sOffset, lOffset)
 	}
 
 	wg.Wait()
 }
 
-func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int, contrastFactor float32) {
+func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int, contrastFactor float32, hOffset, sOffset, lOffset int) {
 	defer wg.Done()
 
 	for i := 0; i < len(img)-3; i += 4 {
@@ -58,7 +58,7 @@ func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int,
 			img[i+2] = clamp(int(img[i+2]) + bOffset)
 		}
 
-		if contrastFactor != 1 {
+		if contrastFactor != 1.0 {
 			oldR := float32(img[i])
 			oldG := float32(img[i+1])
 			oldB := float32(img[i+2])
@@ -66,21 +66,12 @@ func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int,
 			img[i] = clamp(int(contrastFactor*(oldR-128) + 128))
 			img[i+1] = clamp(int(contrastFactor*(oldG-128) + 128))
 			img[i+2] = clamp(int(contrastFactor*(oldB-128) + 128))
-
 		}
-	}
-}
 
-func ImageHSLModifications(img *image.RGBA, hOffset, sOffset, lOffset int) {
-
-	x := img.Rect.Max.X
-	y := img.Rect.Max.Y
-
-	for j := 0; j < y; j++ {
-		for i := 0; i < x; i++ {
-			r := img.Pix[j*img.Stride+i*4]
-			g := img.Pix[j*img.Stride+i*4+1]
-			b := img.Pix[j*img.Stride+i*4+2]
+		if hOffset != 0 || sOffset != 0 || lOffset != 0 {
+			r := img[i]
+			g := img[i+1]
+			b := img[i+2]
 
 			rgbPoint := colourConversions.RGBPoint{r, g, b}
 
@@ -98,10 +89,9 @@ func ImageHSLModifications(img *image.RGBA, hOffset, sOffset, lOffset int) {
 
 			updatedRGBPoint := colourConversions.HSLToRGB(hslPoint)
 
-			img.Pix[j*img.Stride+i*4] = updatedRGBPoint.R
-			img.Pix[j*img.Stride+i*4+1] = updatedRGBPoint.G
-			img.Pix[j*img.Stride+i*4+2] = updatedRGBPoint.B
-
+			img[i] = updatedRGBPoint.R
+			img[i+1] = updatedRGBPoint.G
+			img[i+2] = updatedRGBPoint.B
 		}
 	}
 }

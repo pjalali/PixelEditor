@@ -89,11 +89,7 @@ func Edit(w http.ResponseWriter, r *http.Request) {
 		panic("Invalid number of threads.")
 	}
 
-	imageUtils.ModifyRGBParallel(base64ImageRGBA, edt.Red, edt.Green, edt.Blue, edt.Contrast, edt.Threads)
-
-	if edt.Hue != 0 || edt.Saturation != 0 || edt.Light != 0 {
-		imageUtils.ImageHSLModifications(base64ImageRGBA, edt.Hue, edt.Saturation, edt.Light)
-	}
+	imageUtils.ModifyImageParallel(base64ImageRGBA, edt.Red, edt.Green, edt.Blue, edt.Contrast, edt.Hue, edt.Saturation, edt.Light, edt.Threads)
 
 	buffer := new(bytes.Buffer)
 	err = png.Encode(buffer, base64ImageRGBA)
