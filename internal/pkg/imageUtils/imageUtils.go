@@ -12,9 +12,9 @@ func ModifyImageParallel(img *image.RGBA, rOffset, gOffset, bOffset, contrast, h
 	y := img.Rect.Max.Y
 	yChunk := y / nThreads
 
-	var contrastFactor float32 = 1.0
+	var contrastFactor float64 = 1.0
 	if contrast != 0 {
-		contrastFactor = (259 * (float32(contrast) + 255)) / (255 * (259 - float32(contrast)))
+		contrastFactor = (259 * (float64(contrast) + 255)) / (255 * (259 - float64(contrast)))
 	}
 
 	// // Citation: https://goinbigdata.com/golang-wait-for-all-goroutines-to-finish/
@@ -42,7 +42,7 @@ func ModifyImageParallel(img *image.RGBA, rOffset, gOffset, bOffset, contrast, h
 	wg.Wait()
 }
 
-func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int, contrastFactor float32, hOffset, sOffset, lOffset int) {
+func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int, contrastFactor float64, hOffset, sOffset, lOffset int) {
 	defer wg.Done()
 
 	for i := 0; i < len(img)-3; i += 4 {
@@ -59,9 +59,9 @@ func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int,
 		}
 
 		if contrastFactor != 1.0 {
-			oldR := float32(img[i])
-			oldG := float32(img[i+1])
-			oldB := float32(img[i+2])
+			oldR := float64(img[i])
+			oldG := float64(img[i+1])
+			oldB := float64(img[i+2])
 
 			img[i] = clamp(int(contrastFactor*(oldR-128) + 128))
 			img[i+1] = clamp(int(contrastFactor*(oldG-128) + 128))
@@ -78,13 +78,13 @@ func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int,
 			hslPoint := colourConversions.RGBtoHSL(rgbPoint)
 
 			if hOffset != 0 {
-				modifyHue(&hslPoint, hOffset)
+				hslPoint.H = float64(hOffset)
 			}
 			if sOffset != 0 {
-				modifySaturation(&hslPoint, sOffset)
+				modifyAndClipFloat(&hslPoint.S, float64(sOffset), 0, 100)
 			}
 			if lOffset != 0 {
-				modifyLight(&hslPoint, lOffset)
+				modifyAndClipFloat(&hslPoint.L, float64(lOffset), 0, 100)
 			}
 
 			updatedRGBPoint := colourConversions.HSLToRGB(hslPoint)
@@ -96,33 +96,13 @@ func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int,
 	}
 }
 
-func modifyHue(p *colourConversions.HSLPoint, hOffset int) {
-	p.H = float64(hOffset)
+func modifyAndClipFloat(initialValue *float64, offset, min, max float64) {
+	*initialValue += float64(offset)
 
-	if p.H > 360 {
-		p.H = 360
-	} else if p.H < 0 {
-		p.H = 0
-	}
-}
-
-func modifySaturation(p *colourConversions.HSLPoint, sOffset int) {
-	p.S += float64(sOffset)
-
-	if p.S > 100 {
-		p.S = 100
-	} else if p.S < 0 {
-		p.S = 0
-	}
-}
-
-func modifyLight(p *colourConversions.HSLPoint, lOffset int) {
-	p.L += float64(lOffset)
-
-	if p.L > 100 {
-		p.L = 100
-	} else if p.L < 0 {
-		p.L = 0
+	if *initialValue > max {
+		*initialValue = max
+	} else if *initialValue < min {
+		*initialValue = min
 	}
 }
 
