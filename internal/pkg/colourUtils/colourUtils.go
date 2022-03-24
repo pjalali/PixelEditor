@@ -1,4 +1,4 @@
-package colourConversions
+package colourUtils
 
 import "math"
 

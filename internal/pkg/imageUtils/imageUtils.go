@@ -4,7 +4,7 @@ import (
 	"image"
 	"sync"
 
-	"pjalali.github.io/pixeleditor/internal/pkg/colourConversions"
+	"pjalali.github.io/pixeleditor/internal/pkg/colourUtils"
 )
 
 func ModifyImageParallel(img *image.RGBA, rOffset, gOffset, bOffset, contrast, hOffset, sOffset, lOffset, nThreads int) {
@@ -46,57 +46,67 @@ func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int,
 	defer wg.Done()
 
 	for i := 0; i < len(img)-3; i += 4 {
-		if rOffset != 0 {
-			img[i] = clamp(int(img[i]) + rOffset)
-		}
-
-		if gOffset != 0 {
-			img[i+1] = clamp(int(img[i+1]) + gOffset)
-		}
-
-		if bOffset != 0 {
-			img[i+2] = clamp(int(img[i+2]) + bOffset)
-		}
-
-		if contrastFactor != 1.0 {
-			oldR := float64(img[i])
-			oldG := float64(img[i+1])
-			oldB := float64(img[i+2])
-
-			img[i] = clamp(int(contrastFactor*(oldR-128) + 128))
-			img[i+1] = clamp(int(contrastFactor*(oldG-128) + 128))
-			img[i+2] = clamp(int(contrastFactor*(oldB-128) + 128))
+		if rOffset != 0 || gOffset != 0 || bOffset != 0 || contrastFactor != 1.0 {
+			modifyRGBValues(img, i, rOffset, gOffset, bOffset, contrastFactor)
 		}
 
 		if hOffset != 0 || sOffset != 0 || lOffset != 0 {
-			r := img[i]
-			g := img[i+1]
-			b := img[i+2]
-
-			rgbPoint := colourConversions.RGBPoint{r, g, b}
-
-			hslPoint := colourConversions.RGBtoHSL(rgbPoint)
-
-			if hOffset != 0 {
-				hslPoint.H = float64(hOffset)
-			}
-			if sOffset != 0 {
-				modifyAndClipFloat(&hslPoint.S, float64(sOffset), 0, 100)
-			}
-			if lOffset != 0 {
-				modifyAndClipFloat(&hslPoint.L, float64(lOffset), 0, 100)
-			}
-
-			updatedRGBPoint := colourConversions.HSLToRGB(hslPoint)
-
-			img[i] = updatedRGBPoint.R
-			img[i+1] = updatedRGBPoint.G
-			img[i+2] = updatedRGBPoint.B
+			modifyHSLValues(img, i, hOffset, sOffset, lOffset)
 		}
 	}
 }
 
-func modifyAndClipFloat(initialValue *float64, offset, min, max float64) {
+func modifyRGBValues(img []uint8, index, rOffset, gOffset, bOffset int, contrastFactor float64) {
+	if rOffset != 0 {
+		img[index] = clamp(int(img[index]) + rOffset)
+	}
+
+	if gOffset != 0 {
+		img[index+1] = clamp(int(img[index+1]) + gOffset)
+	}
+
+	if bOffset != 0 {
+		img[index+2] = clamp(int(img[index+2]) + bOffset)
+	}
+
+	if contrastFactor != 1.0 {
+		oldR := float64(img[index])
+		oldG := float64(img[index+1])
+		oldB := float64(img[index+2])
+
+		img[index] = clamp(int(contrastFactor*(oldR-128) + 128))
+		img[index+1] = clamp(int(contrastFactor*(oldG-128) + 128))
+		img[index+2] = clamp(int(contrastFactor*(oldB-128) + 128))
+	}
+}
+
+func modifyHSLValues(img []uint8, index, hOffset, sOffset, lOffset int) {
+	r := img[index]
+	g := img[index+1]
+	b := img[index+2]
+
+	rgbPoint := colourUtils.RGBPoint{r, g, b}
+
+	hslPoint := colourUtils.RGBtoHSL(rgbPoint)
+
+	if hOffset != 0 {
+		hslPoint.H = float64(hOffset)
+	}
+	if sOffset != 0 {
+		modifyAndClampFloat(&hslPoint.S, float64(sOffset), 0, 100)
+	}
+	if lOffset != 0 {
+		modifyAndClampFloat(&hslPoint.L, float64(lOffset), 0, 100)
+	}
+
+	updatedRGBPoint := colourUtils.HSLToRGB(hslPoint)
+
+	img[index] = updatedRGBPoint.R
+	img[index+1] = updatedRGBPoint.G
+	img[index+2] = updatedRGBPoint.B
+}
+
+func modifyAndClampFloat(initialValue *float64, offset, min, max float64) {
 	*initialValue += float64(offset)
 
 	if *initialValue > max {
