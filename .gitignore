@@ -1,9 +1,2 @@
-__pycache__
-
-gorender/pkg*
-
-PixelEditorEngine
-
 .vscode
-
-*.png
+__debug_bin.exe
