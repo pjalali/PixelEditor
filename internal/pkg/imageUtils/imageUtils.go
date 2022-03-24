@@ -58,15 +58,15 @@ func modifySlice(wg *sync.WaitGroup, img []uint8, rOffset, gOffset, bOffset int,
 
 func modifyRGBValues(img []uint8, index, rOffset, gOffset, bOffset int, contrastFactor float64) {
 	if rOffset != 0 {
-		img[index] = clamp(int(img[index]) + rOffset)
+		img[index] = clampToUInt8(int(img[index]) + rOffset)
 	}
 
 	if gOffset != 0 {
-		img[index+1] = clamp(int(img[index+1]) + gOffset)
+		img[index+1] = clampToUInt8(int(img[index+1]) + gOffset)
 	}
 
 	if bOffset != 0 {
-		img[index+2] = clamp(int(img[index+2]) + bOffset)
+		img[index+2] = clampToUInt8(int(img[index+2]) + bOffset)
 	}
 
 	if contrastFactor != 1.0 {
@@ -74,9 +74,9 @@ func modifyRGBValues(img []uint8, index, rOffset, gOffset, bOffset int, contrast
 		oldG := float64(img[index+1])
 		oldB := float64(img[index+2])
 
-		img[index] = clamp(int(contrastFactor*(oldR-128) + 128))
-		img[index+1] = clamp(int(contrastFactor*(oldG-128) + 128))
-		img[index+2] = clamp(int(contrastFactor*(oldB-128) + 128))
+		img[index] = clampToUInt8(int(contrastFactor*(oldR-128) + 128))
+		img[index+1] = clampToUInt8(int(contrastFactor*(oldG-128) + 128))
+		img[index+2] = clampToUInt8(int(contrastFactor*(oldB-128) + 128))
 	}
 }
 
@@ -116,7 +116,7 @@ func modifyAndClampFloat(initialValue *float64, offset, min, max float64) {
 	}
 }
 
-func clamp(value int) uint8 {
+func clampToUInt8(value int) uint8 {
 	if value > 255 {
 		return 255
 	} else if value < 0 {
