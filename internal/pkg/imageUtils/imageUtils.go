@@ -90,13 +90,13 @@ func modifyHSLValues(img []uint8, index, hOffset, sOffset, lOffset int) {
 	hslPoint := colourUtils.RGBtoHSL(rgbPoint)
 
 	if hOffset != 0 {
-		hslPoint.H = float64(hOffset)
+		hslPoint.H = addAndClampFloat(float64(hOffset), 0, 0, 360)
 	}
 	if sOffset != 0 {
-		modifyAndClampFloat(&hslPoint.S, float64(sOffset), 0, 100)
+		hslPoint.S = addAndClampFloat(hslPoint.S, float64(sOffset), 0, 100)
 	}
 	if lOffset != 0 {
-		modifyAndClampFloat(&hslPoint.L, float64(lOffset), 0, 100)
+		hslPoint.L = addAndClampFloat(hslPoint.L, float64(lOffset), 0, 100)
 	}
 
 	updatedRGBPoint := colourUtils.HSLToRGB(hslPoint)
@@ -106,14 +106,15 @@ func modifyHSLValues(img []uint8, index, hOffset, sOffset, lOffset int) {
 	img[index+2] = updatedRGBPoint.B
 }
 
-func modifyAndClampFloat(initialValue *float64, offset, min, max float64) {
-	*initialValue += float64(offset)
+func addAndClampFloat(initialValue, offset, min, max float64) float64 {
+	initialValue += float64(offset)
 
-	if *initialValue > max {
-		*initialValue = max
-	} else if *initialValue < min {
-		*initialValue = min
+	if initialValue > max {
+		initialValue = max
+	} else if initialValue < min {
+		initialValue = min
 	}
+	return initialValue
 }
 
 func clampToUInt8(value int) uint8 {
